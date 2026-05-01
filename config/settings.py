@@ -32,8 +32,11 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv(
 if DEBUG and 'testserver' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS = list(ALLOWED_HOSTS) + ['testserver']
 
+CANONICAL_SITE_HOST = config("CANONICAL_SITE_HOST", default="").strip()
 
-# Application definition
+
+# Application definition — apps packages live under src/; sys.path includes src/
+# from manage.py, config.wsgi, and config.asgi.
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -42,8 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
-    'dashboard',
+    'accounts.apps.AccountsConfig',
+    'dashboard.apps.DashboardConfig',
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
@@ -55,6 +58,7 @@ MASTER_ENCRYPTION_KEY = config('MASTER_ENCRYPTION_KEY', default='')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'config.middleware.ApexToCanonicalWwwMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

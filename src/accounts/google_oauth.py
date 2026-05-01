@@ -40,9 +40,14 @@ def _client_config() -> Dict[str, str]:
 
 
 def get_redirect_uri(request=None) -> str:
+    """Must match an Authorized redirect URI in Google Cloud Console (exact string)."""
     redirect_uri = getattr(settings, "GOOGLE_OAUTH_REDIRECT_URI", None)
-    if redirect_uri:
+    if redirect_uri and redirect_uri.strip():
         return redirect_uri.strip()
+    resolver = getattr(request, "resolver_match", None) if request else None
+    if resolver is not None and resolver.url_name == "oauth_google_callback":
+        built = request.build_absolute_uri(request.path)
+        return built if built.endswith("/") else built + "/"
     if request:
         from django.urls import reverse
 
