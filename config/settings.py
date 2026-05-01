@@ -29,6 +29,8 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+if DEBUG and 'testserver' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS = list(ALLOWED_HOSTS) + ['testserver']
 
 
 # Application definition
@@ -40,8 +42,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
     'dashboard',
 ]
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID', default='')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET', default='')
+GOOGLE_OAUTH_REDIRECT_URI = config('GOOGLE_OAUTH_REDIRECT_URI', default='')
+MASTER_ENCRYPTION_KEY = config('MASTER_ENCRYPTION_KEY', default='')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
