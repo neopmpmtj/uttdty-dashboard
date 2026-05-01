@@ -1,0 +1,21 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mission Control | UTTDTY Dashboard</title>
+    <link rel="stylesheet" href="{% static 'dashboard/mission-control/app.css' %}">
+</head>
+<body>
+    <noscript>Mission Control needs JavaScript enabled.</noscript>
+    <div
+        id="mission-control-root"
+        data-bootstrap-url="{% url 'dashboard:mission_control_bootstrap' %}"
+        data-tasks-url="{% url 'dashboard:mission_control_tasks' %}"
+        data-calendar-url="{% url 'dashboard:mission_control_calendar' %}"
+        data-task-status-url-template="/mission-control/api/tasks/__TASK_ID__/status/"
+    ></div>
+    <script type="module" src="{% static 'dashboard/mission-control/app.js' %}"></script>
+</body>
+</html>
