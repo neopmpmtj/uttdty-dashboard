@@ -126,6 +126,31 @@ sudo systemctl restart uttdty-dashboard
 
 The actual service name may differ. Check before restarting.
 
+## Public Server Noise And Crawlers
+
+This app is on the public internet, so logs may contain bot/scanner traffic.
+
+Common examples:
+
+```text
+Invalid HTTP_HOST header: 'server.ip.address'
+GET /robots.txt
+GET /wiki
+GET /accounts/login/
+GET /accounts/google/login/
+```
+
+Interpretation:
+
+- Direct-IP or unknown-host requests are usually scanners hitting the VPS by IP rather than `uttdty.com`.
+- These should not be added to `ALLOWED_HOSTS` unless the user explicitly wants direct-IP access.
+- The custom middleware catches invalid `Host` headers early and returns a quiet `400 Bad Request`.
+- `/robots.txt` exists to reduce polite crawler noise and returns `Disallow: /`.
+- `NoIndexMiddleware` adds `X-Robots-Tag: noindex, nofollow` so search engines should not index the login/dashboard pages.
+- `robots.txt` and `X-Robots-Tag` only guide polite crawlers. They do not stop malicious scanners.
+
+If future agents see crawler logs, do not assume the app is compromised. First check whether requests are being rejected with `400`, redirected to login, or blocked by normal authentication.
+
 ## Data Model Assumptions
 
 Mission Control reads real PostgreSQL data from day one.

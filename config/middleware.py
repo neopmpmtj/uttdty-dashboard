@@ -44,3 +44,15 @@ class ApexToCanonicalWwwMiddleware:
         path = request.get_full_path()
         target = f"{_scheme(request)}://{canonical}{port_part}{path}"
         return HttpResponsePermanentRedirect(target)
+
+
+class NoIndexMiddleware:
+    """Tell search engines not to index this login-gated personal dashboard."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response.setdefault("X-Robots-Tag", "noindex, nofollow")
+        return response
