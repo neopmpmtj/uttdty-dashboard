@@ -292,6 +292,7 @@ When adding a new endpoint:
 - Protect it with `@login_required`.
 - Use `@require_GET`, `@require_POST`, or the appropriate method decorator.
 - For writes, require CSRF and validate payloads strictly.
+- When decoding JSON request bodies, handle both malformed JSON and invalid UTF-8. Catch `json.JSONDecodeError` and `UnicodeDecodeError`, and return a clean `400` response instead of allowing malformed input to become a server error.
 - Return clear JSON errors with appropriate HTTP status codes.
 
 Raw SQL is acceptable for dashboard read models because many referenced tables are existing database tables rather than Django models in this repo. Keep SQL readable and scoped.

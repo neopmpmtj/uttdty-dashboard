@@ -66,7 +66,7 @@ def mission_control_calendar(request: HttpRequest) -> JsonResponse:
 def mission_control_update_task(request: HttpRequest, task_id: str) -> JsonResponse:
     try:
         payload = json.loads(request.body.decode("utf-8") or "{}")
-    except json.JSONDecodeError:
+    except (UnicodeDecodeError, json.JSONDecodeError):
         return JsonResponse({"error": "Invalid JSON payload"}, status=400)
 
     target_status = payload.get("completionStatus")
