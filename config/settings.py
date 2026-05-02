@@ -58,8 +58,8 @@ GOOGLE_OAUTH_REDIRECT_URI = config('GOOGLE_OAUTH_REDIRECT_URI', default='')
 MASTER_ENCRYPTION_KEY = config('MASTER_ENCRYPTION_KEY', default='')
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'config.middleware.ApexToCanonicalWwwMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

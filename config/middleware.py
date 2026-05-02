@@ -1,7 +1,8 @@
 """Project middleware."""
 
 from django.conf import settings
-from django.http import HttpResponsePermanentRedirect
+from django.core.exceptions import DisallowedHost
+from django.http import HttpResponseBadRequest, HttpResponsePermanentRedirect
 
 
 def _scheme(request) -> str:
@@ -22,17 +23,22 @@ class ApexToCanonicalWwwMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        try:
+            request_host = request.get_host()
+        except DisallowedHost:
+            return HttpResponseBadRequest("Bad Request (Invalid Host header)")
+
         canonical = getattr(settings, "CANONICAL_SITE_HOST", "") or ""
         canonical = canonical.strip().lower()
         if not canonical or not canonical.startswith("www."):
             return self.get_response(request)
 
-        host = request.get_host().split(":")[0].lower()
+        host = request_host.split(":")[0].lower()
         apex = canonical.removeprefix("www.")
         if host != apex:
             return self.get_response(request)
 
-        full_host = request.get_host()
+        full_host = request_host
         port_part = full_host[full_host.index(":") :] if ":" in full_host else ""
 
         path = request.get_full_path()
